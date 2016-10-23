@@ -1,8 +1,8 @@
 
 # parse_args
-if {$argc != 4} {
+if {$argc != 5} {
     puts "Please run program as:"
-    puts "./script method_name aa_name conf_name aligned_xyz_name"
+    puts "./script method_name aa_name conf_name aligned_xyz_name ref_xyz_name"
 }
 
 # set global vars from args
@@ -10,6 +10,7 @@ set method_name [lindex $argv 0]
 set aa_name     [lindex $argv 1]
 set conf_name   [lindex $argv 2]
 set aligned_xyz_name  [lindex $argv 3]
+set ref_xyz_name  [lindex $argv 4]
 
 set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w" ]
 set fp_w $fp_log
