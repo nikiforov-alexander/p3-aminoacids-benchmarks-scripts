@@ -83,6 +83,11 @@ parse_args $@
 
 set_init_vars
 
+cp -v $aligned_xyz_file $ref_xyz_file \
+    $dir_w_vmd_processing
+
+cd $dir_w_vmd_processing || exit 1
+
 run_vmd \
     $method_name \
     $aa_name \
