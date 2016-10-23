@@ -68,10 +68,10 @@ parse_args () { _ $@
     esac
 } 
 
-run_vmd () { _
+run_vmd () { _ $@
     $vmd \
-        -e $tcl_script  
-        -m $ref_xyz_file $aligned_xyz_file
+        -e $tcl_script \
+        -m $ref_xyz_file $aligned_xyz_file \
         -args $@ 
 } 
 #                            body                           #   
