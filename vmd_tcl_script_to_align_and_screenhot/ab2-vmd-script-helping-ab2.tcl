@@ -3,6 +3,7 @@
 if {$argc != 5} {
     puts "Please run program as:"
     puts "./script method_name aa_name conf_name aligned_xyz_name ref_xyz_name"
+    exit
 }
 
 # set global vars from args
