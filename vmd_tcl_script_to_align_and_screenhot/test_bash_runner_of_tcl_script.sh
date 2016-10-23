@@ -64,7 +64,7 @@ set_init_vars () { _
     var vmd "/usr/local/bin/vmd" \
         -check_if_file_exists || exit 1 
     var tcl_script \
-        "$pwd/ab2-vmd-script-helping-ab2.tcl" \
+        "$pwd/tcl_vmd_script_rendering_screenshot_of_aligned_mols.tcl" \
         -check_if_file_exists || exit 1 
     var dir_w_vmd_processing \
         "$method_name-$aa_name-$conf_name-vmd_processing_dir" \
