@@ -26,15 +26,6 @@ fi
 
 #                          functions
 
-set_init_vars () { _
-    var pwd $PWD
-    var vmd "/usr/local/bin/vmd" \
-        -check_if_file_exists || exit 1 
-    var tcl_script \
-        "$pwd/ab2-vmd-script-helping-ab2.tcl" \
-        -check_if_file_exists || exit 1 
-} 
-
 print_script_banner () { _
     echo
     echo Run as: ./script method_name aa_name conf_name aligned_xyz_file ref_xyz_file
@@ -68,6 +59,18 @@ parse_args () { _ $@
     esac
 } 
 
+set_init_vars () { _
+    var pwd $PWD
+    var vmd "/usr/local/bin/vmd" \
+        -check_if_file_exists || exit 1 
+    var tcl_script \
+        "$pwd/ab2-vmd-script-helping-ab2.tcl" \
+        -check_if_file_exists || exit 1 
+    var dir_w_vmd_processing \
+        "$method_name-$aa_name-$conf_name-vmd_processing_dir" \
+        -crdir_if_not_exists || exit 1 
+} 
+
 run_vmd () { _ $@
     $vmd \
         -e $tcl_script \
@@ -76,9 +79,9 @@ run_vmd () { _ $@
 } 
 #                            body                           #   
 
-set_init_vars
-
 parse_args $@
+
+set_init_vars
 
 run_vmd \
     $method_name \
