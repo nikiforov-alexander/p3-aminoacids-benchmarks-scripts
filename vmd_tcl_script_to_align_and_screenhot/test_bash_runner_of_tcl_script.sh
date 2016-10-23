@@ -30,11 +30,14 @@ set_init_vars () { _
     var pwd $PWD
     var vmd "/usr/local/bin/vmd" \
         -check_if_file_exists || exit 1 
+    var tcl_script \
+        "$pwd/ab2-vmd-script-helping-ab2.tcl" \
+        -check_if_file_exists || exit 1 
 } 
 
 print_script_banner () { _
     echo
-    echo Run as: ./script method_name aa_name conf_name aligned_xyz_name
+    echo Run as: ./script method_name aa_name conf_name aligned_xyz_file ref_xyz_file
     echo
 } 
 
@@ -45,14 +48,18 @@ parse_args () { _ $@
             var method_name "om2"
             var aa_name "Ala"
             var conf_name "xab"
-            var aligned_xyz_name "o-aligned-om2-xab-Ala.xyz" \
+            var aligned_xyz_file "o-aligned-om2-xab-Ala.xyz" \
+                -check_if_file_exists || exit 1 
+            var ref_xyz_file "r-om2-xab-Ala.xyz" \
                 -check_if_file_exists || exit 1 
         ;;
-        4)
+        5)
             var method_name $1
             var aa_name $2
             var conf_name $3
-            var aligned_xyz_name $4 \
+            var aligned_xyz_file $4 \
+                -check_if_file_exists || exit 1 
+            var ref_xyz_file $5 \
                 -check_if_file_exists || exit 1 
         ;;
         *)
@@ -61,10 +68,22 @@ parse_args () { _ $@
     esac
 } 
 
+run_vmd () { _
+    $vmd \
+        -e $tcl_script  
+        -m $ref_xyz_file $aligned_xyz_file
+        -args $@ 
+} 
 #                            body                           #   
 
 set_init_vars
 
 parse_args $@
 
+run_vmd \
+    $method_name \
+    $aa_name \
+    $conf_name \
+    $aligned_xyz_file \
+    $ref_xyz_file
 #                            end                            #   
