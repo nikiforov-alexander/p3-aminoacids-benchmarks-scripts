@@ -21,6 +21,7 @@ set conf_name   [lindex $argv 2]
 set aligned_xyz_name  [lindex $argv 3]
 set ref_xyz_name  [lindex $argv 4]
 set selection_indices_file  [lindex $argv 5]
+set selection_indices_file_pointer [ open $selection_indices_file "r" ]
 
 set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w" ]
 set fp_w $fp_log
@@ -209,15 +210,29 @@ namespace eval representation {
         mol addrep $mol_id
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
+    proc split_selection_file_and_apply_rep_for_atom_groups {file_pointer} {
+        print::putsnow "[dict get [info frame 0] proc] starts"
+        set color_id 0
+        foreach line [split [read $file_pointer] "\n"] {
+            set selection "[lrange $line 1 end]"
+            add_rep_as_color_for_atoms 1 $color_id $selection
+            incr color_id
+        }
+        print::putsnow "[dict get [info frame 0] proc] ends" 
+    }
 }
 #                         #  body #                         #  
 align::main 1
+
 show::set_display_settings
 show::put_aa_name_on_screen
 show::local_render
+
 representation::set_new 0 3
 representation::delete  1
 representation::set_new 1 0
+representation::split_selection_file_and_apply_rep_for_atom_groups $selection_indices_file_pointer
+
 show::print_heavy_atom_names_near_atoms
 close $fp_log
 #                         #  end #                         #  
