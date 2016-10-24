@@ -28,7 +28,13 @@ fi
 
 print_script_banner () { _
     echo
-    echo Run as: ./script method_name aa_name conf_name aligned_xyz_file ref_xyz_file
+    echo Run as: ./script 
+    echo    method_name 
+    echo    aa_name 
+    echo    conf_name 
+    echo    aligned_xyz_file 
+    echo    ref_xyz_file
+    echo    selection_indices_file
     echo
 } 
 
@@ -43,14 +49,19 @@ parse_args () { _ $@
                 -check_if_file_exists || exit 1 
             var ref_xyz_file "r-om2-xab-Ala.xyz" \
                 -check_if_file_exists || exit 1 
+            var selection_indices_file \
+                "Ala.selection" \
+                -check_if_file_exists || exit 1 
         ;;
-        5)
+        6)
             var method_name $1
             var aa_name $2
             var conf_name $3
             var aligned_xyz_file $4 \
                 -check_if_file_exists || exit 1 
             var ref_xyz_file $5 \
+                -check_if_file_exists || exit 1 
+            var selection_indices_file $6 \
                 -check_if_file_exists || exit 1 
         ;;
         *)
@@ -93,5 +104,6 @@ run_vmd \
     $aa_name \
     $conf_name \
     $aligned_xyz_file \
-    $ref_xyz_file
+    $ref_xyz_file \
+    $selection_indices_file
 #                            end                            #   
