@@ -184,11 +184,12 @@ namespace eval align {
 
 namespace eval representation {
     proc set_new {mol_id color_id} {
+        # makes molecule single colored
         print::putsnow "[dict get [info frame 0] proc] starts" 
         mol delrep 0 $mol_id
         #mol representation Lines 2.0
         #                      ball_radius lines_width lines_res balls_res
-        mol representation CPK 0.10000 0.05 100.000000 100.000000
+        #mol representation CPK 0.10000 0.05 100.000000 100.000000
         mol color ColorID $color_id
         mol selection all 
         mol material Opaque
@@ -198,6 +199,14 @@ namespace eval representation {
     proc delete {mol_id} {
         print::putsnow "[dict get [info frame 0] proc] starts" 
         mol delrep 0 $mol_id
+        print::putsnow "[dict get [info frame 0] proc] ends" 
+    }
+    proc add_rep_as_color_for_atoms {mol_id color_id selection} {
+        print::putsnow "[dict get [info frame 0] proc] starts" 
+        mol representation CPK 0.10000 0.05 100.000000 100.000000
+        mol color ColorID $color_id
+        mol selection $selection 
+        mol addrep $mol_id
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
 }
