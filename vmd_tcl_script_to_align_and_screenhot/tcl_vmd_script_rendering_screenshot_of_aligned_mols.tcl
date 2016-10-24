@@ -1,8 +1,16 @@
 
 # parse_args
-if {$argc != 5} {
+if {$argc != 6} {
     puts "Please run program as:"
-    puts "./script method_name aa_name conf_name aligned_xyz_name ref_xyz_name"
+    puts "vmd \\"
+    puts "  -e script \\"
+    puts "  -m ref_xyz_name aligned_xyz_name \\"
+    puts "  -args method_name \\" 
+    puts "        aa_name \\" 
+    puts "        conf_name \\" 
+    puts "        aligned_xyz_name \\"
+    puts "        ref_xyz_name \\"
+    puts "        selection_indices_file \\"
     exit
 }
 
@@ -12,6 +20,7 @@ set aa_name     [lindex $argv 1]
 set conf_name   [lindex $argv 2]
 set aligned_xyz_name  [lindex $argv 3]
 set ref_xyz_name  [lindex $argv 4]
+set selection_indices_file  [lindex $argv 5]
 
 set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w" ]
 set fp_w $fp_log
