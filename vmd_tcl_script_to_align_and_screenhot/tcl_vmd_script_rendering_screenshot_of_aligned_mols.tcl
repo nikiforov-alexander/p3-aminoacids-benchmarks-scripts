@@ -17,7 +17,8 @@ set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w"
 set fp_w $fp_log
 set rmsd 0
 set rmsd_selection "all and not name H"
-#                         #  printing stuff #                         #  
+#                          functions
+
 namespace eval print {
 
 	proc writecoords {mol_id aligned_xyz_name} {
@@ -72,7 +73,7 @@ namespace eval print {
 	}
 
 }
-#                         #  show functions #                         #  
+
 namespace eval show {
     proc set_display_settings {} {
         print::putsnow "[dict get [info frame 0] proc] starts" 
@@ -107,16 +108,32 @@ namespace eval show {
         puts $fp_render_tcl "set pov \"$pov\""
         puts $fp_render_tcl "set tga \$pov.tga"
         puts $fp_render_tcl "render POV3 \$pov \"povray +W%w +H%h -I\$pov -O$tga +D +X +A +FT\""
-        puts $fp_render_tcl "puts \"Please enter the comment about the system\""
-        puts $fp_render_tcl "gets stdin comment"
-        puts $fp_render_tcl "set fp \[open \"comment\" w\]" 
-        puts $fp_render_tcl "puts \$fp \"$conf_name \$comment\""
-        puts $fp_render_tcl "close \$fp"
+        #                          deprecated part where we wrote
+        #                          comment each time we screenshot
+        #puts $fp_render_tcl "puts \"Please enter the comment about the system\""
+        #puts $fp_render_tcl "gets stdin comment"
+        #
+        #puts $fp_render_tcl "set fp \[open \"comment\" w\]" 
+        #puts $fp_render_tcl "puts \$fp \"$conf_name \$comment\""
+        #puts $fp_render_tcl "close \$fp"
         close $fp_render_tcl
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
+    proc print_heavy_atom_names_near_atoms {} {
+        print::putsnow "[dict get [info frame 0] proc] starts"
+        set sel_all [atomselect 0 all]
+        for {set serial 1} {$serial <= [ $sel_all num ] } {incr serial} {
+            set sel_atom [ atomselect 0 "serial $serial" ]
+            lassign [ $sel_atom get { x y z } ] xyz_atom
+            set atom_name [ $sel_atom get name ] 
+            if { $atom_name != "H" } {
+                graphics 0 text [vecadd $xyz_atom {0.1 0.1 0.1}] "$atom_name" size 1
+            }
+        }
+        print::putsnow "[dict get [info frame 0] proc] ends"
+    } 
 }
-#                         # aligning namespace #                         #  
+
 namespace eval align {
     proc move_structure_to_reference_one {mol_id} {
         print::putsnow "[dict get [info frame 0] proc] starts" 
@@ -155,10 +172,34 @@ namespace eval align {
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
 }
+
+namespace eval representation {
+    proc set_new {mol_id color_id} {
+        print::putsnow "[dict get [info frame 0] proc] starts" 
+        mol delrep 0 $mol_id
+        #mol representation Lines 2.0
+        #                      ball_radius lines_width lines_res balls_res
+        mol representation CPK 0.10000 0.05 100.000000 100.000000
+        mol color ColorID $color_id
+        mol selection all 
+        mol material Opaque
+        mol addrep $mol_id
+        print::putsnow "[dict get [info frame 0] proc] ends" 
+    }
+    proc delete {mol_id} {
+        print::putsnow "[dict get [info frame 0] proc] starts" 
+        mol delrep 0 $mol_id
+        print::putsnow "[dict get [info frame 0] proc] ends" 
+    }
+}
 #                         #  body #                         #  
 align::main 1
 show::set_display_settings
 show::put_aa_name_on_screen
 show::local_render
+representation::set_new 0 3
+representation::delete  1
+representation::set_new 1 0
+show::print_heavy_atom_names_near_atoms
 close $fp_log
 #                         #  end #                         #  
