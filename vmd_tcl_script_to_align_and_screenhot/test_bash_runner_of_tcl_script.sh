@@ -88,6 +88,33 @@ run_vmd () { _ $@
         -m $ref_xyz_file $aligned_xyz_file \
         -args $@ 
 } 
+
+convert_image_to_png_and_pdf () { _
+
+    run_convert () { _ $@
+        $1 $2 $3
+    } 
+
+    var tga_image \
+        `find ./ -name "*tga"` \
+        -check_if_file_exists || exit 1 
+
+    var png_image \
+        ${tga_image//tga/png}
+
+    var pdf_image \
+        ${tga_image//tga/pdf}
+
+    var convert_prog \
+        `which convert` \
+        -check_if_file_exists || exit 1 
+
+    run_convert $convert_prog \
+        $tga_image $png_image
+
+    run_convert $convert_prog \
+        $tga_image $pdf_image
+} 
 #                            body                           #   
 
 parse_args $@
@@ -109,4 +136,6 @@ run_vmd \
     $aligned_xyz_file \
     $ref_xyz_file \
     $selection_indices_file
+
+convert_image_to_png_and_pdf
 #                            end                            #   
