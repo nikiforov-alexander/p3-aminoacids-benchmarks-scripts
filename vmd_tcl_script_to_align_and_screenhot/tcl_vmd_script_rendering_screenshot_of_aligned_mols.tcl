@@ -103,8 +103,9 @@ namespace eval show {
         global rmsd
         global conf_name
         set sel_all_ref [atomselect 0 all]
-        graphics 0 color 0
-        graphics 0 text [vecadd [measure center $sel_all_ref] {1 1 1}] "$aa_name $method_name $conf_name $rmsd"  size 0.7
+        # black
+        graphics 0 color 16 
+        graphics 0 text [vecadd [measure center $sel_all_ref] {2 1 1}] "$aa_name $method_name $conf_name $rmsd"  size 0.7
         print::putsnow "[dict get [info frame 0] proc] ends"
     } 
     proc local_render {} {
@@ -210,13 +211,40 @@ namespace eval representation {
         mol addrep $mol_id
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
+
+    proc add_rmsd_text_for_group_of_atoms {sel_of_atoms_of_group color_id} {
+        # select ref group of atoms and aligned to 
+        # calculate rmsd
+        set ref_group_atoms_selection [atomselect 0 "$sel_of_atoms_of_group"]
+        set aligned_group_atoms_sel [atomselect 1 "$sel_of_atoms_of_group"]
+
+        # measure and format rmsd
+        set rmsd [format "%4.3f" [measure rmsd $ref_group_atoms_selection $aligned_group_atoms_sel]]
+
+        # change color of text
+        graphics 0 color $color_id
+        
+        # print rmsd at point "center_of_molecule" + vector_to_add 
+        # with scaled_y_coord_of_rmsd_text
+        set scaled_y_coord_of_rmsd_text [expr {$color_id*0.5}]
+        set vector_to_add "1 $scaled_y_coord_of_rmsd_text 1"
+        graphics 0 text [vecadd [measure center [atomselect 0 all]] $vector_to_add] "$rmsd"  size 0.7
+
+    }
+
     proc split_selection_file_and_apply_rep_for_atom_groups {file_pointer} {
         print::putsnow "[dict get [info frame 0] proc] starts"
         set color_id 0
         foreach line [split [read $file_pointer] "\n"] {
-            set selection "[lrange $line 1 end]"
-            add_rep_as_color_for_atoms 1 $color_id $selection
-            incr color_id
+            if {[llength $line] != 0 } {
+                set selection_of_group_of_atoms "[lrange $line 1 end]"
+
+                add_rep_as_color_for_atoms 1 $color_id $selection_of_group_of_atoms
+
+                add_rmsd_text_for_group_of_atoms $selection_of_group_of_atoms $color_id
+
+                incr color_id
+            } 
         }
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
