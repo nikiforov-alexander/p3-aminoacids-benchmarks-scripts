@@ -169,8 +169,8 @@ namespace eval align {
         global conf_name
         set ref_atoms_sel  [ atomselect 0 "$rmsd_selection" ]
         set toalign_sel    [ atomselect $mol_id "$rmsd_selection" ]
-        set rmsd [format "%4.3f" [measure rmsd $toalign_sel $ref_atoms_sel] ]
-        puts $fp_log [format "rmsd of %25s %15s using %10s is %4.3f" $conf_name $aa_name $method_name $rmsd ]
+        set rmsd [format "%4.2f" [measure rmsd $toalign_sel $ref_atoms_sel] ]
+        puts $fp_log [format "rmsd of %25s %15s using %10s is %4.2f" $conf_name $aa_name $method_name $rmsd ]
 
         print::putsnow "[dict get [info frame 0] proc] ends" 
     }
@@ -219,7 +219,7 @@ namespace eval representation {
         set aligned_group_atoms_sel [atomselect 1 "$sel_of_atoms_of_group"]
 
         # measure and format rmsd
-        set rmsd [format "%4.3f" [measure rmsd $ref_group_atoms_selection $aligned_group_atoms_sel]]
+        set rmsd [format "%4.2f" [measure rmsd $ref_group_atoms_selection $aligned_group_atoms_sel]]
 
         # change color of text
         graphics 0 color $color_id
