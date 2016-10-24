@@ -114,10 +114,11 @@ namespace eval show {
         global aa_name
         global conf_name
         set fp_render_tcl [open "render.tcl" "w"]
-        set pov "picture-of-aligned-structures-after-opt-and-ref-one-$conf_name-$aa_name-$method_name.pov"
-        set tga $pov.tga
+        set pic_name "picture-of-aligned-structures-after-opt-and-ref-one-$conf_name-$aa_name-$method_name"
+        set pov "$pic_name.pov"
+        set tga $pic_name.tga
         puts $fp_render_tcl "set pov \"$pov\""
-        puts $fp_render_tcl "set tga \$pov.tga"
+        puts $fp_render_tcl "set tga \"$tga\""
         puts $fp_render_tcl "render POV3 \$pov \"povray +W%w +H%h -I\$pov -O$tga +D +X +A +FT\""
         #                          deprecated part where we wrote
         #                          comment each time we screenshot
