@@ -1,0 +1,17 @@
+= Collection of Bash/Tcl/VMD scripts for P3 amimoacids project
+:experimental:
+:toc:
+:toclevels: 5
+:toc-placement: preamble
+:sectnums:
+:helpful_bash_funcs_sh: link:./include_scripts/helpful_bash_funcs.sh[helpful_bash_funcs.sh]
+:my_helpful_bash_scripts_repo: https://github.com/nikiforov-alexander/helpful-bash-scripts
+
+toc::[]
+
+== Main File Included Everywhere
+
+{helpful_bash_funcs_sh} script is main file that is included in all specific 
+Bash scripts used. For more about it see 
+{my_helpful_bash_scripts_repo}[Repository with helpful bash Scripts].
+
