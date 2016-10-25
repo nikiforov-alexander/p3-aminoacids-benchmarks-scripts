@@ -1,0 +1,82 @@
+= Collection of Bash/Tcl/VMD scripts for P3 amimoacids project
+:experimental:
+:toc:
+:toclevels: 5
+:toc-placement: preamble
+:sectnums:
+:helpful_bash_funcs_sh: link:./include_scripts/helpful_bash_funcs.sh[helpful_bash_funcs.sh]
+:my_helpful_bash_scripts_repo: https://github.com/nikiforov-alexander/helpful-bash-scripts
+:tcl_vmd_script_rendering_screenshot_of_aligned_mols_tcl: link:./vmd_tcl_script_to_align_and_screenhot/tcl_vmd_script_rendering_screenshot_of_aligned_mols.tcl[tcl_vmd_script_rendering_screenshot_of_aligned_mols.tcl]
+:test_bash_runner_of_tcl_script: link:./vmd_tcl_script_to_align_and_screenhot/test_bash_runner_of_tcl_script.sh[test_bash_runner_of_tcl_script.sh]
+:test_input_files: link:./vmd_tcl_script_to_align_and_screenhot/test_input_files[test_input_files]
+
+toc::[]
+
+== Main File Included Everywhere
+
+{helpful_bash_funcs_sh} script is main file that is included in all specific 
+Bash scripts used. For more about it see 
+{my_helpful_bash_scripts_repo}[Repository with helpful bash Scripts].
+
+== Bash/Tcl/VMD script to makes a nice screenshot
+
+It consist of two scripts:
+
+* <<bash_runner_script, Bash Runner Script>>
+* <<tcl_vmd_script_that_makes_screenhot, Tcl script for VMD>>
+
+[[bash_runner_script]]
+=== Bash Runner Script
+
+The script {test_bash_runner_of_tcl_script} is a script that 
+runs {tcl_vmd_script_rendering_screenshot_of_aligned_mols_tcl} in VMD.
+Here is what it does in sudo code:
+
+* `parse_args` : parses args of script. Currently can be run in test mode with 0 args
+and test files that can be found in {test_input_files}:
++
+```
+./script
+    method_name \
+    aa_name \
+    conf_name \
+    aligned_xyz_file \
+    ref_xyz_file \
+    selection_indices_file \
+    tcl_vmd_script_rendering_screenshot_of_aligned_mols
+```
+* `set_init_vars` : sets VMD program location and name of the directory with
+all output files
+* `run_vmd` : runs VMD with following args:
++
+```
+/path/to/vmd \
+    -e tcl_vmd_script_rendering_screenshot_of_aligned_mols_tcl \
+    -m ref_xyz_file aligned_xyz_file \
+    -args \ 
+        method_name \
+        aa_name \
+        conf_name \
+        aligned_xyz_file \
+        ref_xyz_file \
+        selection_indices_file \
+```
+* `convert_image_to_png_and_pdf` : this last function converts image rendered
+by VMD/Povray in `tga` format to `png` and `pdf` accordingly.
+
+[[tcl_vmd_script_that_makes_screenhot]]
+=== Tcl Script For VMD
+
+{tcl_vmd_script_rendering_screenshot_of_aligned_mols_tcl} is used to do the 
+following:
+
+* align molecules: aligned_xyz_file to ref_xyz_file
+* set display settings: white background, e.g.
+* prints aminoacid name, method name, conformer name and total All-atoms RMSD
+* creates file `render.tcl` that user has to run in VMD TkConsole in 
+order to create a snaphsot after he picks position with mouse in which
+molecules look best
+* set representations to molecules so that groups that are provided in
+`selection_indices_file` file be highlighted, and rmsd printed along
+* shows atoms names near heavy atoms
+
