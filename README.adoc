@@ -67,3 +67,16 @@ by VMD/Povray in `tga` format to `png` and `pdf` accordingly.
 [[tcl_vmd_script_that_makes_screenhot]]
 === Tcl Script For VMD
 
+{tcl_vmd_script_rendering_screenshot_of_aligned_mols_tcl} is used to do the 
+following:
+
+* align molecules: aligned_xyz_file to ref_xyz_file
+* set display settings: white background, e.g.
+* prints aminoacid name, method name, conformer name and total All-atoms RMSD
+* creates file `render.tcl` that user has to run in VMD TkConsole in 
+order to create a snaphsot after he picks position with mouse in which
+molecules look best
+* set representations to molecules so that groups that are provided in
+`selection_indices_file` file be highlighted, and rmsd printed along
+* shows atoms names near heavy atoms
+
