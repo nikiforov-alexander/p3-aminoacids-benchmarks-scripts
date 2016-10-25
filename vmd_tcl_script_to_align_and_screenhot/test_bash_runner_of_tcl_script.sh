@@ -35,6 +35,7 @@ print_script_banner () { _
     echo    aligned_xyz_file 
     echo    ref_xyz_file
     echo    selection_indices_file
+    echo    tcl_vmd_script_rendering_screenshot_of_aligned_mols
     echo
 } 
 
@@ -52,8 +53,11 @@ parse_args () { _ $@
             var selection_indices_file \
                 "Ala.selection" \
                 -check_if_file_exists || exit 1 
+            var tcl_vmd_script_rendering_screenshot_of_aligned_mols \
+                "$PWD/tcl_vmd_script_rendering_screenshot_of_aligned_mols.tcl" \
+                -check_if_file_exists || exit 1 
         ;;
-        6)
+        7)
             var method_name $1
             var aa_name $2
             var conf_name $3
@@ -62,6 +66,9 @@ parse_args () { _ $@
             var ref_xyz_file $5 \
                 -check_if_file_exists || exit 1 
             var selection_indices_file $6 \
+                -check_if_file_exists || exit 1 
+            var tcl_vmd_script_rendering_screenshot_of_aligned_mols \
+                "$7" \
                 -check_if_file_exists || exit 1 
         ;;
         *)
@@ -74,9 +81,6 @@ set_init_vars () { _
     var pwd $PWD
     var vmd "/usr/local/bin/vmd" \
         -check_if_file_exists || exit 1 
-    var tcl_script \
-        "$pwd/tcl_vmd_script_rendering_screenshot_of_aligned_mols.tcl" \
-        -check_if_file_exists || exit 1 
     var dir_w_vmd_processing \
         "$method_name-$aa_name-$conf_name-vmd_processing_dir" \
         -crdir_if_not_exists || exit 1 
@@ -84,7 +88,7 @@ set_init_vars () { _
 
 run_vmd () { _ $@
     $vmd \
-        -e $tcl_script \
+        -e $tcl_vmd_script_rendering_screenshot_of_aligned_mols \
         -m $ref_xyz_file $aligned_xyz_file \
         -args $@ 
 } 
