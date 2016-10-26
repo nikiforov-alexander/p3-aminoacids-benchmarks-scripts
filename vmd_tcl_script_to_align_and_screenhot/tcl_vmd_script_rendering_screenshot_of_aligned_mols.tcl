@@ -26,7 +26,7 @@ set selection_indices_file_pointer [ open $selection_indices_file "r" ]
 set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w" ]
 set fp_w $fp_log
 set rmsd 0
-set rmsd_selection "all and not name H"
+set rmsd_selection "all"
 #                          functions
 
 namespace eval print {
