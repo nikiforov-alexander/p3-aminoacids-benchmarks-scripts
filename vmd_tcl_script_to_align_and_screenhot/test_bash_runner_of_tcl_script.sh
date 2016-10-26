@@ -94,30 +94,54 @@ run_vmd () { _ $@
 } 
 
 convert_image_to_png_and_pdf () { _
+    # we convert first to eps, then
+    # to pdf because size is smaller
+
+    set_init_vars () { _
+        # image from VMD
+        var tga_image \
+            `find ./ -name "*tga"` \
+            -check_if_file_exists || exit 1 
+
+        # formats to which we will convert
+        var png_image \
+            ${tga_image//tga/png}
+        var pdf_image \
+            ${tga_image//tga/pdf}
+        var eps_image \
+            ${tga_image//tga/eps}
+
+        # convert progs
+        var convert_prog \
+            `which convert` \
+            -check_if_file_exists || exit 1 
+        var epstopdf \
+            `which epstopdf` \
+            -check_if_file_exists || exit 1 
+    } 
 
     run_convert () { _ $@
         $1 $2 $3
     } 
 
-    var tga_image \
-        `find ./ -name "*tga"` \
-        -check_if_file_exists || exit 1 
+    run_epstopdf () { _ $@
+        $1 $2 --outfile="$3"
+    } 
 
-    var png_image \
-        ${tga_image//tga/png}
+    #                            body                           #   
 
-    var pdf_image \
-        ${tga_image//tga/pdf}
-
-    var convert_prog \
-        `which convert` \
-        -check_if_file_exists || exit 1 
+    set_init_vars
 
     run_convert $convert_prog \
         $tga_image $png_image
 
     run_convert $convert_prog \
-        $tga_image $pdf_image
+        $tga_image $eps_image
+
+    run_epstopdf $epstopdf \
+        $eps_image $pdf_image
+
+    #                            end                            #   
 } 
 #                            body                           #   
 
