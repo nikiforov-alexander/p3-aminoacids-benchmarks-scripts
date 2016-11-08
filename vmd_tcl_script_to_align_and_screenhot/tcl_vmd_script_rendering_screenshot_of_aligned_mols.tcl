@@ -26,7 +26,8 @@ set selection_indices_file_pointer [ open $selection_indices_file "r" ]
 set fp_log [ open "log-of-vmd-commands-$method_name-$aa_name-$conf_name.log" "w" ]
 set fp_w $fp_log
 set rmsd 0
-set rmsd_selection "all"
+set rmsd_selection "all and not name H"
+set all_atoms_rmsd_selection "all"
 #                          functions
 
 namespace eval print {
@@ -162,14 +163,14 @@ namespace eval align {
     }
     proc calculate_rmsd_between_structures {mol_id} {
         print::putsnow "[dict get [info frame 0] proc] starts" 
-        global rmsd_selection
+        global all_atoms_rmsd_selection
         global fp_log
         global rmsd
         global aa_name
         global method_name
         global conf_name
-        set ref_atoms_sel  [ atomselect 0 "$rmsd_selection" ]
-        set toalign_sel    [ atomselect $mol_id "$rmsd_selection" ]
+        set ref_atoms_sel  [ atomselect 0 "$all_atoms_rmsd_selection" ]
+        set toalign_sel    [ atomselect $mol_id "$all_atoms_rmsd_selection" ]
         set rmsd [format "%4.2f" [measure rmsd $toalign_sel $ref_atoms_sel] ]
         puts $fp_log [format "rmsd of %25s %15s using %10s is %4.2f" $conf_name $aa_name $method_name $rmsd ]
 
